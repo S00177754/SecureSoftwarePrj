@@ -11,6 +11,18 @@ namespace JMS_DAL.Data_Objects
         public string Name;
         public string ClientID;
         public List<string> EquipmentList;
+
+        public JobDTO()
+        {
+        }
+
+        public JobDTO(Job job)
+        {
+            ID = job.ID.ToString();
+            Name = job.Name;
+            ClientID = job.ClientID.ToString();
+            job.EquipmentList.ForEach(e => EquipmentList.Add(e.ToString()));
+        }
     }
 
     public class Job
@@ -20,12 +32,17 @@ namespace JMS_DAL.Data_Objects
         public Guid ClientID;
         public List<Guid> EquipmentList;
 
-        public void Transfer(JobDTO data)
+        public Job()
         {
-            ID = Guid.Parse(data.ID);
-            Name = data.Name;
-            ClientID = Guid.Parse(data.ClientID);
-            data.EquipmentList.ForEach(d => EquipmentList.Add(Guid.Parse(d)));
         }
+
+        public Job(JobDTO dto)
+        {
+            ID = Guid.Parse(dto.ID);
+            Name = dto.Name;
+            ClientID = Guid.Parse(dto.ClientID);
+            dto.EquipmentList.ForEach(d => EquipmentList.Add(Guid.Parse(d)));
+        }
+
     }
 }

@@ -10,6 +10,17 @@ namespace JMS_DAL.Data_Objects
         public string ID;
         public string CompanyName;
         public string Address;
+
+        public ClientDTO() 
+        { 
+        }
+
+        public ClientDTO(Client client)
+        {
+            ID = client.ID.ToString();
+            CompanyName = client.CompanyName;
+            Address = client.Address;
+        }
     }
 
     public class Client
@@ -18,12 +29,16 @@ namespace JMS_DAL.Data_Objects
         public string CompanyName;
         public string Address;
 
-        public void Transfer(ClientDTO data)
+        public Client()
         {
-            ID = Guid.Parse(data.ID);
-            CompanyName = data.CompanyName;
-            Address = data.Address;
-            
         }
+
+        public Client(ClientDTO dto)
+        {
+            ID = Guid.Parse(dto.ID);
+            CompanyName = dto.CompanyName;
+            Address = dto.Address;
+        }
+
     }
 }

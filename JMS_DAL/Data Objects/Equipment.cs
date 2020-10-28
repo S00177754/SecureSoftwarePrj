@@ -12,6 +12,19 @@ namespace JMS_DAL.Data_Objects
         public string Manufacturer;
         public string Model;
         public int Amount;
+
+        public EquipmentDTO()
+        {
+        }
+
+        public EquipmentDTO(Equipment equipment)
+        {
+            ID = equipment.ID.ToString();
+            Name = equipment.Name;
+            Manufacturer = equipment.Manufacturer;
+            Model = equipment.Model;
+            Amount = equipment.Amount;
+        }
     }
 
     public class Equipment
@@ -22,13 +35,18 @@ namespace JMS_DAL.Data_Objects
         public string Model;
         public int Amount;
 
-        public void Transfer(EquipmentDTO data)
+        public Equipment()
         {
-            ID = Guid.Parse(data.ID);
-            Name = data.Name;
-            Manufacturer = data.Manufacturer;
-            Model = data.Model;
-            Amount = data.Amount;
         }
+
+        public Equipment(EquipmentDTO dto)
+        {
+            ID = Guid.Parse(dto.ID);
+            Name = dto.Name;
+            Manufacturer = dto.Manufacturer;
+            Model = dto.Model;
+            Amount = dto.Amount;
+        }
+
     }
 }

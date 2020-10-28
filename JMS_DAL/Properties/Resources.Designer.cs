@@ -61,6 +61,15 @@ namespace JMS_DAL.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AIzaSyCOXt1nweww3ScTrPUpIEZ4KpkS5iikMIU.
+        /// </summary>
+        internal static string FirebaseAPIKey {
+            get {
+                return ResourceManager.GetString("FirebaseAPIKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to softwaredev-38cda.
         /// </summary>
         internal static string ProjectID {

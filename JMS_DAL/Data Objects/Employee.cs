@@ -14,6 +14,19 @@ namespace JMS_DAL.Data_Objects
         public string LastName;
         public int Role;
         public string UserUID;
+
+        public EmployeeDTO()
+        {
+        }
+
+        public EmployeeDTO(Employee employee)
+        {
+            ID = employee.ID.ToString();
+            FirstName = employee.FirstName;
+            LastName = employee.LastName;
+            Role = (int)employee.Role;
+            UserUID = employee.UserUID;
+        }
     }
 
     public class Employee
@@ -24,13 +37,18 @@ namespace JMS_DAL.Data_Objects
         public EmployeeRole Role;
         public string UserUID;
 
-        public void Transfer(EmployeeDTO data)
+        public Employee()
         {
-            ID = Guid.Parse(data.ID);
-            FirstName = data.FirstName;
-            LastName = data.LastName;
-            Role = (EmployeeRole)data.Role;
-            UserUID = data.UserUID;
         }
+
+        public Employee(EmployeeDTO dto)
+        {
+            ID = Guid.Parse(dto.ID);
+            FirstName = dto.FirstName;
+            LastName = dto.LastName;
+            Role = (EmployeeRole)dto.Role;
+            UserUID = dto.UserUID;
+        }
+
     }
 }

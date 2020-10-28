@@ -6,4 +6,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\JMS_DAL\JMS_DAL.csproj" />
+  </ItemGroup>
+
 </Project>
