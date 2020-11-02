@@ -21,6 +21,8 @@ namespace JMS_DAL.Data_Objects
             CompanyName = client.CompanyName;
             Address = client.Address;
         }
+
+        
     }
 
     public class Client
@@ -39,6 +41,8 @@ namespace JMS_DAL.Data_Objects
             CompanyName = dto.CompanyName;
             Address = dto.Address;
         }
+
+        
 
     }
 }
