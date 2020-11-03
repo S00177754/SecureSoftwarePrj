@@ -103,17 +103,16 @@ namespace JMS_DAL
         #region CREATE DATA - HTTP Requests
         public static async Task<bool> PostData(ClientDTO dto,string DocumentID)
         {
-            //string data = JsonConvert.SerializeObject(dto);
-
             List<string> fields = new List<string>();
-            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("ID",dto.ID));
+            string id = Guid.NewGuid().ToString();
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("ID",id));
             fields.Add(FirebasePostBuilder.ConvertFieldToJSON("CompanyName",dto.CompanyName));
             fields.Add(FirebasePostBuilder.ConvertFieldToJSON("Address",dto.Address));
-            string data = FirebasePostBuilder.ConvertToPostable("clients", Guid.NewGuid().ToString(), string.Concat(fields[0], ",", fields[1], ",", fields[2]));
+            string data = FirebasePostBuilder.ConvertToPostable("clients",id , string.Concat(fields[0], ",", fields[1], ",", fields[2]));
             var content = new StringContent(data, Encoding.UTF8, "application/json");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SignInDetails.idToken);
-            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID), content);
+            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Commit), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -131,11 +130,18 @@ namespace JMS_DAL
 
         public static async Task<bool> PostData(EmployeeDTO dto)
         {
-            string data = JsonConvert.SerializeObject(dto);
+            List<string> fields = new List<string>();
+            string id = Guid.NewGuid().ToString();
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("ID", id));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("FirstName", dto.FirstName));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("LastName", dto.LastName));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("Role", dto.Role));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("UserUID", dto.UserUID));
+            string data = FirebasePostBuilder.ConvertToPostable("employees", id, string.Concat(fields[0], ",", fields[1], ",", fields[2], ",", fields[3], ",", fields[4]));
             var content = new StringContent(data, Encoding.UTF8, "application/json");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SignInDetails.idToken);
-            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID), content);
+            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Commit), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -153,11 +159,18 @@ namespace JMS_DAL
 
         public static async Task<bool> PostData(EquipmentDTO dto)
         {
-            string data = JsonConvert.SerializeObject(dto);
+            List<string> fields = new List<string>();
+            string id = Guid.NewGuid().ToString();
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("ID", id));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("Amount", dto.Amount));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("Manufacturer", dto.Manufacturer));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("Model", dto.Model));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("Name", dto.Name));
+            string data = FirebasePostBuilder.ConvertToPostable("equipment", id, string.Concat(fields[0], ",", fields[1], ",", fields[2], ",", fields[3], ",", fields[4]));
             var content = new StringContent(data, Encoding.UTF8, "application/json");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SignInDetails.idToken);
-            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID), content);
+            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Commit), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -176,11 +189,18 @@ namespace JMS_DAL
 
         public static async Task<bool> PostData(JobDTO dto)
         {
-            string data = JsonConvert.SerializeObject(dto);
+            List<string> fields = new List<string>();
+            string id = Guid.NewGuid().ToString();
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("ID", id));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("ClientID", dto.ClientID));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("EquipmentList", dto.EquipmentList.ToArray()));
+            fields.Add(FirebasePostBuilder.ConvertFieldToJSON("Name", dto.Name));
+            string data = FirebasePostBuilder.ConvertToPostable("clients", id, string.Concat(fields[0], ",", fields[1], ",", fields[2], ",", fields[3]));
             var content = new StringContent(data, Encoding.UTF8, "application/json");
 
+
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SignInDetails.idToken);
-            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID), content);
+            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Commit), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -302,6 +322,10 @@ namespace JMS_DAL
         public static string ConvertFieldToJSON(string name, int value)
         {
             return string.Concat("\"", name, "\":{\"integerValue\":\"", value, "\"}");
+        }
+        public static string ConvertFieldToJSON(string name, string[] value)
+        {
+            return string.Concat("\"", name, "\":{\"arrayValue\":\"", JsonConvert.SerializeObject(value), "\"}");
         }
     }
 
