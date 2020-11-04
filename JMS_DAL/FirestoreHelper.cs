@@ -218,17 +218,11 @@ namespace JMS_DAL
         #endregion
 
         #region READ DATA - HTTP Requests
-        public static async Task<bool> GetData()
+        public static async Task<ClientDTO> GetAllData()
         {
-            string data = JsonConvert.SerializeObject(
-                new ReqBody_SignInEmail()
-                {
-
-                });
-            var content = new StringContent(data, Encoding.UTF8, "application/json");
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", SignInDetails.idToken);
-            HttpResponseMessage response = await client.PostAsync(SignInURL + Properties.Resources.FirebaseAPIKey, content);
+            HttpResponseMessage response = await client.GetAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Get,"clients"));
 
             if (response.IsSuccessStatusCode)
             {
@@ -240,7 +234,7 @@ namespace JMS_DAL
             else
             {
                 Debug.WriteLine("Unsuccessful");
-                return false;
+                return null;
             }
         }
 
