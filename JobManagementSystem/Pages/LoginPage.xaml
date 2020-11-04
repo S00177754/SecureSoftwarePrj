@@ -36,11 +36,11 @@
 
             <Button Name="BtnLogin" Content="Login" Margin="10,5" FontSize="18" Height="35" Click="BtnLogin_Click" />
 
-            <TextBlock Name="TxtBlkErrorMsg" Margin="10,5" />
+            
         </StackPanel>
 
         <StackPanel Grid.Column="1">
-            
+            <TextBlock Name="TxtBlkErrorMsg" Margin="10,5" TextWrapping="WrapWithOverflow" />
         </StackPanel>
         
     </Grid>

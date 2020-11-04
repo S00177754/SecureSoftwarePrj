@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Resources;
@@ -193,6 +194,12 @@ namespace JMS_DAL
 
         #region READ ALL DATA - HTTP Requests
 
+        [Serializable]
+        public class FirebaseDoc<T>
+        {
+            public List<T> document;
+        }
+
         public static async Task<List<ClientDTO>> GetAllClientData()
         {
             HttpResponseMessage response = await client.GetAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.GetAll,"clients"));
@@ -201,8 +208,8 @@ namespace JMS_DAL
             {
                 Debug.WriteLine("Successful");
                 string json = response.Content.ReadAsStringAsync().Result;
-                List<ClientDTO> data = JsonConvert.DeserializeObject<List<ClientDTO>>(json);
-                return data;
+                Dictionary<string,ClientDTO> data = JsonConvert.DeserializeObject<Dictionary<string,ClientDTO>>(json);
+                return data.Values.ToList();
             }
             else
             {
@@ -219,8 +226,8 @@ namespace JMS_DAL
             {
                 Debug.WriteLine("Successful");
                 string json = response.Content.ReadAsStringAsync().Result;
-                List<EquipmentDTO> data = JsonConvert.DeserializeObject<List<EquipmentDTO>>(json);
-                return data;
+                Dictionary<string,EquipmentDTO> data = JsonConvert.DeserializeObject<Dictionary<string,EquipmentDTO>>(json);
+                return data.Values.ToList();
             }
             else
             {
@@ -237,8 +244,8 @@ namespace JMS_DAL
             {
                 Debug.WriteLine("Successful");
                 string json = response.Content.ReadAsStringAsync().Result;
-                List<JobDTO> data = JsonConvert.DeserializeObject<List<JobDTO>>(json);
-                return data;
+                Dictionary<string,JobDTO> data = JsonConvert.DeserializeObject<Dictionary<string,JobDTO>>(json);
+                return data.Values.ToList();
             }
             else
             {
@@ -255,8 +262,8 @@ namespace JMS_DAL
             {
                 Debug.WriteLine("Successful");
                 string json = response.Content.ReadAsStringAsync().Result;
-                List<EmployeeDTO> data = JsonConvert.DeserializeObject<List<EmployeeDTO>>(json);
-                return data;
+                Dictionary<string,EmployeeDTO> data = JsonConvert.DeserializeObject<Dictionary<string,EmployeeDTO>>(json);
+                return data.Values.ToList();
             }
             else
             {
