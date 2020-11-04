@@ -7,9 +7,9 @@ namespace JMS_DAL.Data_Objects
     [Serializable]
     public class ClientDTO
     {
-        public string ID;
-        public string CompanyName;
-        public string Address;
+        public string ID { get; set; }
+        public string CompanyName { get; set; }
+        public string Address { get; set; }
 
         public ClientDTO() 
         { 
@@ -22,8 +22,8 @@ namespace JMS_DAL.Data_Objects
             Address = client.Address;
         }
 
-        
     }
+
 
     public class Client
     {
@@ -41,8 +41,6 @@ namespace JMS_DAL.Data_Objects
             CompanyName = dto.CompanyName;
             Address = dto.Address;
         }
-
-        
-
     }
+
 }

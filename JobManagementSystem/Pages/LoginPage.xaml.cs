@@ -30,11 +30,11 @@ namespace JobManagementSystem.Pages
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
             
-            Task<bool> task = FirestoreHelper.SignIn(TxtBxLoginEmail.Text, TxtBxLoginPassword.Text);
+            Task<bool> task = FirebaseHelper.SignIn(TxtBxLoginEmail.Text, TxtBxLoginPassword.Text);
             bool response = await task;
             if(response)
             {
-                Task<bool> task2 = FirestoreHelper.PostData(new JMS_DAL.Data_Objects.ClientDTO() { CompanyName = "CN", Address = "ad", ID = "12444" }, "sd");
+                Task<bool> task2 = FirebaseHelper.PostData(new JMS_DAL.Data_Objects.ClientDTO() { CompanyName = "CN", Address = "ad", ID = "12444" }, "sd");
             }
         }
 
