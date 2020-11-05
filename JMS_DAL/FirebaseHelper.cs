@@ -110,7 +110,7 @@ namespace JMS_DAL
 
 
         #region CREATE DATA - HTTP Requests
-        public static async Task<bool> PostData(ClientDTO dto,string DocumentID)
+        public static async Task<string> PostData(ClientDTO dto)
         {
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
@@ -119,18 +119,18 @@ namespace JMS_DAL
             if (response.IsSuccessStatusCode)
             {
                 Debug.WriteLine("Successful");
-                //string json = response.Content.ReadAsStringAsync().Result;
-                //SignInDetails = JsonConvert.DeserializeObject<ClientDTO>(json);
-                return true;
+                string json = response.Content.ReadAsStringAsync().Result;
+                Dictionary<string, string> dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                return dict.Values.FirstOrDefault();
             }
             else
             {
                 Debug.WriteLine("Unsuccessful");
-                return false;
+                return "";
             }
         }
 
-        public static async Task<bool> PostData(EmployeeDTO dto)
+        public static async Task<string> PostData(EmployeeDTO dto)
         {
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
@@ -139,18 +139,18 @@ namespace JMS_DAL
             if (response.IsSuccessStatusCode)
             {
                 Debug.WriteLine("Successful");
-                //string json = response.Content.ReadAsStringAsync().Result;
-                //SignInDetails = JsonConvert.DeserializeObject<ResBody_SignInEmail>(json);
-                return true;
+                string json = response.Content.ReadAsStringAsync().Result;
+                Dictionary<string,string> dict = JsonConvert.DeserializeObject<Dictionary<string,string>>(json);
+                return dict.Values.FirstOrDefault();
             }
             else
             {
                 Debug.WriteLine("Unsuccessful");
-                return false;
+                return "";
             }
         }
 
-        public static async Task<bool> PostData(EquipmentDTO dto)
+        public static async Task<string> PostData(EquipmentDTO dto)
         {
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
@@ -159,19 +159,19 @@ namespace JMS_DAL
             if (response.IsSuccessStatusCode)
             {
                 Debug.WriteLine("Successful");
-                //string json = response.Content.ReadAsStringAsync().Result;
-                //SignInDetails = JsonConvert.DeserializeObject<ResBody_SignInEmail>(json);
-                return true;
+                string json = response.Content.ReadAsStringAsync().Result;
+                Dictionary<string, string> dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                return dict.Values.FirstOrDefault();
             }
             else
             {
                 Debug.WriteLine("Unsuccessful");
-                return false;
+                return "";
             }
         }
 
 
-        public static async Task<bool> PostData(JobDTO dto)
+        public static async Task<string> PostData(JobDTO dto)
         {
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
@@ -180,14 +180,14 @@ namespace JMS_DAL
             if (response.IsSuccessStatusCode)
             {
                 Debug.WriteLine("Successful");
-                //string json = response.Content.ReadAsStringAsync().Result;
-                //SignInDetails = JsonConvert.DeserializeObject<ResBody_SignInEmail>(json);
-                return true;
+                string json = response.Content.ReadAsStringAsync().Result;
+                Dictionary<string, string> dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                return dict.Values.FirstOrDefault();
             }
             else
             {
                 Debug.WriteLine("Unsuccessful");
-                return false;
+                return "";
             }
         }
         #endregion
