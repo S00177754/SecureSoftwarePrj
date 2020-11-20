@@ -43,6 +43,7 @@ namespace JMS_DAL
                     password = Password,
                     returnSecureToken = true
                 });
+
             var content = new StringContent(test, Encoding.UTF8, "application/json");
 
             HttpResponseMessage response = await client.PostAsync(SignInURL + Properties.Resources.FirebaseAPIKey, content);

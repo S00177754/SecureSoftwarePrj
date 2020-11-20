@@ -5,14 +5,17 @@ using System.Text;
 namespace JMS_DAL.Data_Objects
 {
     [Serializable]
-    public class ClientDTO
+    public class ClientDTO : DTO
     {
-        public string ID { get; set; }
-        public string CompanyName { get; set; }
-        public string Address { get; set; }
+        
+        public string CompanyName { get { return companyName; } set { companyName = value; } }
+        private string companyName;
+        public string Address { get { return address; } set { address = value; } }
+        private string address;
 
         public ClientDTO() 
-        { 
+        {
+           
         }
 
         public ClientDTO(Client client)
@@ -20,16 +23,24 @@ namespace JMS_DAL.Data_Objects
             ID = client.ID.ToString();
             CompanyName = client.CompanyName;
             Address = client.Address;
+            LastModifiedBy = client.LastModifiedBy;
+        }
+
+        public override string ToString()
+        {
+            return string.Concat($"ID:{ID} - Company:{CompanyName} - Address:{Address} - Last Modified By:{LastModifiedBy}");
         }
 
     }
 
 
-    public class Client
+    public class Client: DataObject
     {
-        public Guid ID;
-        public string CompanyName;
-        public string Address;
+        public string CompanyName { get { return companyName; } set { companyName = value; } }
+        private string companyName;
+
+        public string Address { get { return address; } set { address = value; } }
+        private string address;
 
         public Client()
         {
@@ -40,6 +51,12 @@ namespace JMS_DAL.Data_Objects
             ID = Guid.Parse(dto.ID);
             CompanyName = dto.CompanyName;
             Address = dto.Address;
+            LastModifiedBy = dto.LastModifiedBy;
+        }
+
+        public override string ToString()
+        {
+            return string.Concat($"ID:{ID} - Company:{CompanyName} - Address:{Address} - Last Modified By:{LastModifiedBy}");
         }
     }
 

@@ -35,6 +35,10 @@ namespace JMS_Console
                 Task<bool> login = FirebaseHelper.SignIn(email, password.SecureStringToString());
                 login.Wait();
                 loggedIn = login.Result;
+
+                email = null;
+                password = null;
+                GC.Collect();
             }
         }
 
@@ -306,6 +310,9 @@ namespace JMS_Console
             job.EquipmentList.AddRange(idList.Split(','));
 
             JMS_Commands.CreateJob(job);
+
+            job = null;
+            GC.Collect();
         }
 
         static void MenuOptions_CreateClient()
@@ -319,6 +326,9 @@ namespace JMS_Console
             client.ID = Guid.NewGuid().ToString();
 
             JMS_Commands.CreateClient(client);
+
+            client = null;
+            GC.Collect();
         }
 
         static void MenuOptions_CreateEquipment()
@@ -336,6 +346,9 @@ namespace JMS_Console
             equipment.ID = Guid.NewGuid().ToString();
 
             JMS_Commands.CreateEquipment(equipment);
+
+            equipment = null;
+            GC.Collect();
         }
 
         static void MenuOptions_CreateEmployee()
@@ -352,6 +365,9 @@ namespace JMS_Console
             employee.ID = Guid.NewGuid().ToString();
 
             JMS_Commands.CreateEmployee(employee);
+
+            employee = null;
+            GC.Collect();
         }
 
         static void MenuOptions_UpdateJob()
@@ -376,6 +392,11 @@ namespace JMS_Console
             dto.EquipmentList.AddRange(idList.Split(','));
 
             JMS_Commands.UpdateJob(dto);
+
+            eqList = null;
+            idList = null;
+            dto = null;
+            GC.Collect();
         }
 
         static void MenuOptions_UpdateClient()
@@ -392,6 +413,9 @@ namespace JMS_Console
             client.Address = Console.ReadLine();
 
             JMS_Commands.UpdateClient(client);
+
+            client = null;
+            GC.Collect();
         }
 
         static void MenuOptions_UpdateEquipment()
@@ -411,6 +435,9 @@ namespace JMS_Console
             equipment.Model = Console.ReadLine();
 
             JMS_Commands.UpdateEquipment(equipment);
+
+            equipment = null;
+            GC.Collect();
         }
 
         static void MenuOptions_UpdateEmployee()
@@ -429,6 +456,9 @@ namespace JMS_Console
             employee.Role = 0;
 
             JMS_Commands.CreateEmployee(employee);
+
+            employee = null;
+            GC.Collect();
         }
 
         static void MenuOptions_DeleteJob()
