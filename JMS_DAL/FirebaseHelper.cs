@@ -499,28 +499,4 @@ namespace JMS_DAL
         #endregion
 
     }
-
-    //public static class FirebasePostBuilder
-    //{
-    //    public static string ConvertToPostable(string documentName, string entryID, string fields)
-    //    {
-    //        return string.Concat("{ \"writes\": [ { \"update\": { \"name\":\"projects/",
-    //            Properties.Resources.ProjectID, "/databases/(default)/documents/", documentName, "/",
-    //            entryID, "\",\"fields\": {", fields, "} } } ] }");
-    //    }
-
-    //    public static string ConvertFieldToJSON(string name, string value)
-    //    {
-    //        return string.Concat("\"", name, "\":{\"stringValue\":\"", value, "\"}");
-    //    }
-    //    public static string ConvertFieldToJSON(string name, int value)
-    //    {
-    //        return string.Concat("\"", name, "\":{\"integerValue\":\"", value, "\"}");
-    //    }
-    //    public static string ConvertFieldToJSON(string name, string[] value)
-    //    {
-    //        return string.Concat("\"", name, "\":{\"arrayValue\":\"", JsonConvert.SerializeObject(value), "\"}");
-    //    }
-    //}
-
 }
