@@ -77,14 +77,9 @@ namespace JMS_DAL
 
             switch (type)
             {
+             
                 case QueryType.Get:
-                    query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath,"/",documentID, ".json?auth=", SignInDetails.idToken);
-                    break;
-
                 case QueryType.Update:
-                    query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath, "/", documentID, ".json?auth=", SignInDetails.idToken);
-                    break;
-
                 case QueryType.Delete:
                     query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath, "/", documentID, ".json?auth=", SignInDetails.idToken);
                     break;
