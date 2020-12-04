@@ -1,4 +1,6 @@
-﻿using JMS_DAL;
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+using JMS_DAL;
 using JMS_DAL.Firebase_Wrapper.ResponsePayload;
 using System;
 using System.Collections.Generic;
@@ -34,7 +36,7 @@ namespace JobManagementSystem.Pages
             bool response = await task;
             if(response)
             {
-                Task<bool> task2 = FirebaseHelper.PostData(new JMS_DAL.Data_Objects.ClientDTO() { CompanyName = "CN", Address = "ad", ID = "12444" }, "sd");
+                //Task<bool> task2 = FirebaseHelper.PostData(new JMS_DAL.Data_Objects.ClientDTO() { CompanyName = "CN", Address = "ad", ID = "12444" });
             }
         }
 

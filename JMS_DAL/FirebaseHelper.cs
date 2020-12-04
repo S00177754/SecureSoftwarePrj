@@ -1,4 +1,6 @@
-﻿using JMS_DAL.Data_Objects;
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+using JMS_DAL.Data_Objects;
 using JMS_DAL.Firebase_Wrapper.RequestPayload;
 using JMS_DAL.Firebase_Wrapper.ResponsePayload;
 using Newtonsoft.Json;
@@ -81,22 +83,18 @@ namespace JMS_DAL
 
                 case QueryType.Get:
                     query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath,"/",documentID, ".json?auth=", SignInDetails.idToken);
-                    //query = string.Concat("https://firestore.googleapis.com/v1/projects/", databaseID, "/databases/(default)/documents/", documentPath,"/",documentID);
                     break;
 
                 case QueryType.Update:
                     query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath, "/", documentID, ".json?auth=", SignInDetails.idToken);
-                    //query = string.Concat("https://firestore.googleapis.com/v1/projects/", databaseID, "/databases/(default)/documents/",documentPath,"/",documentID);
                     break;
 
                 case QueryType.Delete:
                     query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath, "/", documentID, ".json?auth=", SignInDetails.idToken);
-                    //query = string.Concat("https://firestore.googleapis.com/v1/projects/", databaseID, "/databases/(default)/documents/",documentPath,"/",documentID);
                     break;
 
                 case QueryType.Commit:
                     query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath,".json?auth=", SignInDetails.idToken);
-                    //query = string.Concat("https://firestore.googleapis.com/v1/projects/", databaseID, "/databases/(default)/documents:commit");
                     break;
 
                 default:
@@ -115,7 +113,7 @@ namespace JMS_DAL
         {
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Commit,"clients"), content);
+            HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Update,"clients",dto.ID), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -135,7 +133,7 @@ namespace JMS_DAL
         {
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Commit,"employees"), content);
+            HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Update,"employees",dto.ID), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -155,7 +153,7 @@ namespace JMS_DAL
         {
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Commit,"equipment"), content);
+            HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Update,"equipment",dto.ID), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -176,7 +174,7 @@ namespace JMS_DAL
         {
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PostAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Commit,"jobs"), content);
+            HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Update,"jobs",dto.ID), content);
 
             if (response.IsSuccessStatusCode)
             {

@@ -1,4 +1,6 @@
-﻿using JMS_DAL;
+﻿// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+using JMS_DAL;
 using JMS_DAL.Data_Objects;
 using System;
 using System.Collections.Generic;
@@ -30,7 +32,7 @@ namespace JMS_Console
             {
                 Console.Write("Please enter email: ");
                 string email = Console.ReadLine();
-                SecureString password = getPasswordFromConsole("Please enter password: ");
+                SecureString password = GetPasswordFromConsole("Please enter password: ");
 
                 Task<bool> login = FirebaseHelper.SignIn(email, password.SecureStringToString());
                 login.Wait();
@@ -155,7 +157,7 @@ namespace JMS_Console
             }
         }
 
-        public static SecureString getPasswordFromConsole(string displayMessage)
+        public static SecureString GetPasswordFromConsole(string displayMessage)
         {
             SecureString pass = new SecureString();
             Console.Write(displayMessage);
