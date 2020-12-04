@@ -77,10 +77,6 @@ namespace JMS_DAL
 
             switch (type)
             {
-                case QueryType.GetAll:
-                    query = string.Concat("https://", databaseID, ".firebaseio.com/",documentPath,".json?auth=",SignInDetails.idToken);
-                    break;
-
                 case QueryType.Get:
                     query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath,"/",documentID, ".json?auth=", SignInDetails.idToken);
                     break;
@@ -93,6 +89,7 @@ namespace JMS_DAL
                     query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath, "/", documentID, ".json?auth=", SignInDetails.idToken);
                     break;
 
+                case QueryType.GetAll:
                 case QueryType.Commit:
                     query = string.Concat("https://", databaseID, ".firebaseio.com/", documentPath,".json?auth=", SignInDetails.idToken);
                     break;
