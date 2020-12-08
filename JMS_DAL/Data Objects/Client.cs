@@ -16,6 +16,8 @@ namespace JMS_DAL.Data_Objects
         public string Address { get { return address; } set { address = value; } }
         private string address;
 
+        
+
         public ClientDTO() 
         {
            
@@ -44,6 +46,7 @@ namespace JMS_DAL.Data_Objects
 
         public string Address { get { return address; } set { address = value; } }
         private string address;
+
 
         public Client()
         {

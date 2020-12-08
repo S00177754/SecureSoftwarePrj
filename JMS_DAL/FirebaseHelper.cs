@@ -24,7 +24,8 @@ namespace JMS_DAL
         static readonly HttpClient client = new HttpClient();
         const string SignInURL = @"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
 
-        static ResBody_SignInEmail SignInDetails;
+        //Storing of bearer token privately and not transferring the token outside of this class
+        static private ResBody_SignInEmail SignInDetails;
 
         /// <summary>
         ///  Sends a Http POST request to the Firebase Authentication Server specified by the public facing Web API key set in the resources folder.
@@ -99,6 +100,12 @@ namespace JMS_DAL
 
         public enum QueryType { Commit,Get,GetAll,Update,Delete }
 
+        public static string GetUserID()
+        {
+            return SignInDetails.localId;
+        }
+
+
 
         #region CREATE DATA - HTTP Requests
         public static async Task<string> PostData(ClientDTO dto)
@@ -167,6 +174,26 @@ namespace JMS_DAL
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID,QueryType.Update,"jobs",dto.ID), content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine("Successful");
+                string json = response.Content.ReadAsStringAsync().Result;
+                Dictionary<string, string> dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                return dict.Values.FirstOrDefault();
+            }
+            else
+            {
+                Debug.WriteLine("Unsuccessful");
+                return "";
+            }
+        }
+
+        public static async Task<string> PostData(PrivateLogDTO dto)
+        {
+            string data = JsonConvert.SerializeObject(dto);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Update, "jobs", dto.ID), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -263,6 +290,24 @@ namespace JMS_DAL
             }
         }
 
+        public static async Task<List<PrivateLogDTO>> GetAllLogData()
+        {
+            HttpResponseMessage response = await client.GetAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.GetAll, "logs"));
+
+            if (response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine("Successful");
+                string json = response.Content.ReadAsStringAsync().Result;
+                Dictionary<string, PrivateLogDTO> data = JsonConvert.DeserializeObject<Dictionary<string, PrivateLogDTO>>(json);
+                return data.Values.ToList();
+            }
+            else
+            {
+                Debug.WriteLine("Unsuccessful");
+                return null;
+            }
+        }
+
 
         #endregion
 
@@ -340,6 +385,23 @@ namespace JMS_DAL
             }
         }
 
+        public static async Task<PrivateLogDTO> GetLogData(string id)
+        {
+            HttpResponseMessage response = await client.GetAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Get, "logs", id));
+
+            if (response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine("Successful");
+                string json = response.Content.ReadAsStringAsync().Result;
+                PrivateLogDTO data = JsonConvert.DeserializeObject<PrivateLogDTO>(json);
+                return data;
+            }
+            else
+            {
+                Debug.WriteLine("Unsuccessful");
+                return null;
+            }
+        }
 
         #endregion
 
@@ -420,6 +482,25 @@ namespace JMS_DAL
             }
         }
 
+        public static async Task<bool> UpdateData(PrivateLogDTO dto)
+        {
+
+            string data = JsonConvert.SerializeObject(dto);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Update, "logs", dto.ID), content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine("Successful");
+                return true;
+            }
+            else
+            {
+                Debug.WriteLine("Unsuccessful");
+                return false;
+            }
+        }
+
         #endregion
 
         #region DELETE DATA - HTTP Requests
@@ -474,6 +555,22 @@ namespace JMS_DAL
         public static async Task<bool> DeleteEquipmentData(string id)
         {
             HttpResponseMessage response = await client.DeleteAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Delete, "equipment", id));
+
+            if (response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine("Successful");
+                return true;
+            }
+            else
+            {
+                Debug.WriteLine("Unsuccessful");
+                return false;
+            }
+        }
+
+        public static async Task<bool> DeleteLogData(string id)
+        {
+            HttpResponseMessage response = await client.DeleteAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Delete, "logs", id));
 
             if (response.IsSuccessStatusCode)
             {

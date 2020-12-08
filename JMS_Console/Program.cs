@@ -50,7 +50,11 @@ namespace JMS_Console
             {
                 PrintOptions();
                 string num = Console.ReadLine();
-                CheckOption(int.Parse(num));
+                int choice = 0;
+                if(int.TryParse(num,out choice))
+                {
+                    CheckOption(choice);
+                }
             }
         }
 
@@ -150,6 +154,18 @@ namespace JMS_Console
                     MenuOptions_DeleteEmployee();
                     break;
 
+                case 21:
+                    break;
+
+                case 22:
+                    break;
+
+                case 23:
+                    break;
+
+                case 24:
+                    break;
+
                 case 0:
                 default:
                     loop = false;
@@ -205,6 +221,13 @@ namespace JMS_Console
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+        public static void PrintLog(PrivateLogDTO dto)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"ID:{dto.ID} - User ID:{dto.UserID} - Message:{dto.Message}");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
         public static void PrintEmployee(EmployeeDTO dto)
         {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -251,6 +274,13 @@ namespace JMS_Console
             if (lstEm != null) { lstEm.ForEach(j => PrintEmployee(j)); } else { Console.WriteLine("No Results."); }
         }
 
+        static void MenuOptions_GetLogs()
+        {
+            Console.WriteLine("\nLogs:");
+            List<PrivateLogDTO> lstEm = JMS_Commands.GetLogs();
+            if (lstEm != null) { lstEm.ForEach(j => PrintLog(j)); } else { Console.WriteLine("No Results."); }
+        }
+
         static void MenuOptions_GetJob()
         {
             Console.Write("Please enter ID of Job:");
@@ -281,6 +311,14 @@ namespace JMS_Console
             string idEm = Console.ReadLine();
             EmployeeDTO dtoEm = JMS_Commands.GetEmployee(idEm);
             if (dtoEm != null) { PrintEmployee(dtoEm); } else { Console.WriteLine("No Results."); }
+        }
+
+        static void MenuOptions_GetLog()
+        {
+            Console.Write("Please enter ID of Log:");
+            string id = Console.ReadLine();
+            PrivateLogDTO dto = JMS_Commands.GetLog(id);
+            if (dto != null) { PrintLog(dto); } else { Console.WriteLine("No Results."); }
         }
 
         static void MenuOptions_CreateJob()
@@ -357,6 +395,20 @@ namespace JMS_Console
             JMS_Commands.CreateEmployee(employee);
 
             employee = null;
+            GC.Collect();
+        }
+
+        static void MenuOptions_CreateLog()
+        {
+            PrivateLogDTO log = new PrivateLogDTO();
+            Console.Write("Please enter message to add:");
+            log.Message = Console.ReadLine();
+            log.UserID = FirebaseHelper.GetUserID();
+            log.ID = Guid.NewGuid().ToString();
+
+            JMS_Commands.CreateLog(log);
+
+            log = null;
             GC.Collect();
         }
 
@@ -451,6 +503,22 @@ namespace JMS_Console
             GC.Collect();
         }
 
+        static void MenuOptions_UpdateLog()
+        {
+            Console.Write("Please enter the id of the log item you would like to update:");
+            PrivateLogDTO log = JMS_Commands.GetLog(Console.ReadLine());
+            Console.Write("Employee to update:");
+            PrintLog(log);
+
+            Console.Write("Please enter updated first name of Employee to add:");
+            log.Message = Console.ReadLine();
+
+            JMS_Commands.CreateLog(log);
+
+            log = null;
+            GC.Collect();
+        }
+
         static void MenuOptions_DeleteJob()
         {
             Console.Write("Please enter ID of Job to delete:");
@@ -473,6 +541,12 @@ namespace JMS_Console
         {
             Console.Write("Please enter ID of Employee to delete:");
             if (JMS_Commands.DeleteEmployee(Console.ReadLine())) { Console.WriteLine("Deleted."); } else { Console.WriteLine("Failed To Delete."); }
+        }
+
+        static void MenuOptions_DeleteLog()
+        {
+            Console.Write("Please enter ID of Log to delete:");
+            if (JMS_Commands.DeleteLog(Console.ReadLine())) { Console.WriteLine("Deleted."); } else { Console.WriteLine("Failed To Delete."); }
         }
 
         #endregion
@@ -509,6 +583,13 @@ namespace JMS_Console
             return dto.Result;
         }
 
+        public static PrivateLogDTO GetLog(string id)
+        {
+            Task<PrivateLogDTO> dto = FirebaseHelper.GetLogData(id);
+            dto.Wait();
+            return dto.Result;
+        }
+
 
         public static List<JobDTO> GetJobs()
         {
@@ -538,6 +619,13 @@ namespace JMS_Console
             return dto.Result;
         }
 
+        public static List<PrivateLogDTO> GetLogs()
+        {
+            Task<List<PrivateLogDTO>> dto = FirebaseHelper.GetAllLogData();
+            dto.Wait();
+            return dto.Result;
+        }
+
 
         public static bool UpdateJob(JobDTO dto)
         {
@@ -561,6 +649,12 @@ namespace JMS_Console
         }
 
         public static bool UpdateClient(ClientDTO dto)
+        {
+            Task<bool> str = FirebaseHelper.UpdateData(dto);
+            str.Wait();
+            return str.Result;
+        }
+        public static bool UpdateLog(PrivateLogDTO dto)
         {
             Task<bool> str = FirebaseHelper.UpdateData(dto);
             str.Wait();
@@ -596,6 +690,13 @@ namespace JMS_Console
             return str.Result;
         }
 
+        public static string CreateLog(PrivateLogDTO dto)
+        {
+            Task<string> str = FirebaseHelper.PostData(dto);
+            str.Wait();
+            return str.Result;
+        }
+
 
         public static bool DeleteJob(string id)
         {
@@ -625,7 +726,12 @@ namespace JMS_Console
             return dto.Result;
         }
 
-        
+        public static bool DeleteLog(string id)
+        {
+            Task<bool> dto = FirebaseHelper.DeleteLogData(id);
+            dto.Wait();
+            return dto.Result;
+        }
     }
 
     public static class Extensions
