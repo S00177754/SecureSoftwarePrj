@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using static JMS_DAL.EncryptionHelper;
 
 namespace JMS_DAL
 {
@@ -23,10 +24,11 @@ namespace JMS_DAL
     {
         static readonly HttpClient client = new HttpClient();
         const string SignInURL = @"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
+        
 
         //Storing of bearer token privately and not transferring the token outside of this class
         static private ResBody_SignInEmail SignInDetails;
-
+        static private KeyPair Keys;
         /// <summary>
         ///  Sends a Http POST request to the Firebase Authentication Server specified by the public facing Web API key set in the resources folder.
         /// </summary>
@@ -56,6 +58,7 @@ namespace JMS_DAL
                 Debug.WriteLine("Successful Sign In");
                 string json = response.Content.ReadAsStringAsync().Result;
                 SignInDetails = JsonConvert.DeserializeObject<ResBody_SignInEmail>(json);
+                GetKeyData();
                 return true;
             }
             else
@@ -108,6 +111,26 @@ namespace JMS_DAL
 
 
         #region CREATE DATA - HTTP Requests
+        public static async Task<string> PostData(KeyPairDTO dto)
+        {
+            string data = JsonConvert.SerializeObject(dto);
+            var content = new StringContent(data, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Update, "keys", SignInDetails.localId), content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine("Successful Key Post");
+                string json = response.Content.ReadAsStringAsync().Result;
+                Dictionary<string, string> dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                return dict.Values.FirstOrDefault();
+            }
+            else
+            {
+                Debug.WriteLine("Unsuccessful key post");
+                return "";
+            }
+        }
+
         public static async Task<string> PostData(ClientDTO dto)
         {
             string data = JsonConvert.SerializeObject(dto);
@@ -191,9 +214,12 @@ namespace JMS_DAL
 
         public static async Task<string> PostData(PrivateLogDTO dto)
         {
+            
+            dto.Message = Encrypt(dto.Message, Keys.PublicKey);
+
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Update, "jobs", dto.ID), content);
+            HttpResponseMessage response = await client.PatchAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Update, "logs", dto.ID), content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -290,7 +316,7 @@ namespace JMS_DAL
             }
         }
 
-        public static async Task<List<PrivateLogDTO>> GetAllLogData()
+        public static async Task<List<PrivateLog>> GetAllLogData()
         {
             HttpResponseMessage response = await client.GetAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.GetAll, "logs"));
 
@@ -299,7 +325,16 @@ namespace JMS_DAL
                 Debug.WriteLine("Successful");
                 string json = response.Content.ReadAsStringAsync().Result;
                 Dictionary<string, PrivateLogDTO> data = JsonConvert.DeserializeObject<Dictionary<string, PrivateLogDTO>>(json);
-                return data.Values.ToList();
+                List<PrivateLog> logs = new List<PrivateLog>();
+
+                foreach (var item in data.Values.ToList())
+                {
+                    PrivateLog pl = new PrivateLog(item);
+                    pl.Message = Decrypt(pl.Message, Keys.PrivateKey);
+                    logs.Add(pl);
+                }
+                return logs;
+                
             }
             else
             {
@@ -312,6 +347,38 @@ namespace JMS_DAL
         #endregion
 
         #region READ DATA - HTTP Requests
+
+        public static async void GetKeyData()
+        {
+            HttpResponseMessage response = await client.GetAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Get, "keys", SignInDetails.localId));
+            string json = response.Content.ReadAsStringAsync().Result;
+
+            if (response.IsSuccessStatusCode && !(string.IsNullOrEmpty(json) || json == "null"))
+            {
+                Debug.WriteLine("Successful");
+                KeyPairDTO data = JsonConvert.DeserializeObject<KeyPairDTO>(json);
+                Keys = new KeyPair(data);
+                return;
+            }
+            else
+            {
+
+                //Creates key pair
+                KeyPair keys = CreateNewKeySet();
+                keys.UserID = SignInDetails.localId;
+                KeyPairDTO dto = new KeyPairDTO(keys);
+                Task<string> val = PostData(dto);
+                val.Wait();
+                if (!string.IsNullOrEmpty(val.Result))
+                {
+                    Debug.WriteLine("Successful Keys");
+                    return;
+                }
+
+                Debug.WriteLine("Unsuccessful");
+                return;
+            }
+        }
 
         public static async Task<ClientDTO> GetClientData(string id)
         {
@@ -385,7 +452,7 @@ namespace JMS_DAL
             }
         }
 
-        public static async Task<PrivateLogDTO> GetLogData(string id)
+        public static async Task<PrivateLog> GetLogData(string id)
         {
             HttpResponseMessage response = await client.GetAsync(CreateQueryString(Properties.Resources.ProjectID, QueryType.Get, "logs", id));
 
@@ -394,7 +461,9 @@ namespace JMS_DAL
                 Debug.WriteLine("Successful");
                 string json = response.Content.ReadAsStringAsync().Result;
                 PrivateLogDTO data = JsonConvert.DeserializeObject<PrivateLogDTO>(json);
-                return data;
+                PrivateLog log = new PrivateLog(data);
+                log.Message = Decrypt(log.Message, Keys.PrivateKey);
+                return log;
             }
             else
             {
@@ -484,6 +553,7 @@ namespace JMS_DAL
 
         public static async Task<bool> UpdateData(PrivateLogDTO dto)
         {
+            dto.Message = Encrypt(dto.Message, Keys.PublicKey);
 
             string data = JsonConvert.SerializeObject(dto);
             var content = new StringContent(data, Encoding.UTF8, "application/json");

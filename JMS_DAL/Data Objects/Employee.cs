@@ -78,4 +78,6 @@ namespace JMS_DAL.Data_Objects
             return $"ID:{ID} - Name:{FirstName} {LastName} - Role:{Enum.GetName(typeof(EmployeeRole), (EmployeeRole)Role)} - UserUID:{UserUID} - Last Modified By:{LastModifiedBy}";
         }
     }
+
+
 }

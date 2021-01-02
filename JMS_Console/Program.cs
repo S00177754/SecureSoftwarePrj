@@ -65,6 +65,7 @@ namespace JMS_Console
             Console.WriteLine("2. Get All Clients\t6. Get Client\t\t10. Create Client\t14. Update Client\t18. Delete Client");
             Console.WriteLine("3. Get All Equipment\t7. Get Equipment\t11. Create Equipment\t15. Update Equipment\t19. Delete Equipment");
             Console.WriteLine("4. Get All Employees\t8. Get Employee\t\t12. Create Employee\t16. Update Employee\t20. Delete Employee");
+            Console.WriteLine("\n21. Get All Logs\t22. Get Log\t\t23. Create Log\t24. Update Log\t25. Delete Log");
             Console.WriteLine("-----------------------");
             Console.WriteLine("0. Exit");
             Console.Write("\nEnter number: ");
@@ -155,15 +156,23 @@ namespace JMS_Console
                     break;
 
                 case 21:
+                    MenuOptions_GetLogs();
                     break;
 
                 case 22:
+                    MenuOptions_GetLog();
                     break;
 
                 case 23:
+                    MenuOptions_CreateLog();
                     break;
 
                 case 24:
+                    MenuOptions_UpdateLog();
+                    break;
+
+                case 25:
+                    MenuOptions_DeleteLog();
                     break;
 
                 case 0:
@@ -221,7 +230,7 @@ namespace JMS_Console
             Console.ForegroundColor = ConsoleColor.White;
         }
 
-        public static void PrintLog(PrivateLogDTO dto)
+        public static void PrintLog(PrivateLog dto)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"ID:{dto.ID} - User ID:{dto.UserID} - Message:{dto.Message}");
@@ -277,7 +286,7 @@ namespace JMS_Console
         static void MenuOptions_GetLogs()
         {
             Console.WriteLine("\nLogs:");
-            List<PrivateLogDTO> lstEm = JMS_Commands.GetLogs();
+            List<PrivateLog> lstEm = JMS_Commands.GetLogs();
             if (lstEm != null) { lstEm.ForEach(j => PrintLog(j)); } else { Console.WriteLine("No Results."); }
         }
 
@@ -317,7 +326,7 @@ namespace JMS_Console
         {
             Console.Write("Please enter ID of Log:");
             string id = Console.ReadLine();
-            PrivateLogDTO dto = JMS_Commands.GetLog(id);
+            PrivateLog dto = JMS_Commands.GetLog(id);
             if (dto != null) { PrintLog(dto); } else { Console.WriteLine("No Results."); }
         }
 
@@ -506,14 +515,14 @@ namespace JMS_Console
         static void MenuOptions_UpdateLog()
         {
             Console.Write("Please enter the id of the log item you would like to update:");
-            PrivateLogDTO log = JMS_Commands.GetLog(Console.ReadLine());
-            Console.Write("Employee to update:");
+            PrivateLog log = JMS_Commands.GetLog(Console.ReadLine());
+            Console.Write("Log to update:");
             PrintLog(log);
 
-            Console.Write("Please enter updated first name of Employee to add:");
+            Console.Write("Please enter updated log message:");
             log.Message = Console.ReadLine();
 
-            JMS_Commands.CreateLog(log);
+            JMS_Commands.CreateLog(new PrivateLogDTO(log));
 
             log = null;
             GC.Collect();
@@ -569,13 +578,6 @@ namespace JMS_Console
             return dto.Result;
         }
 
-        public static EquipmentDTO GetEquipment(string id)
-        {
-            Task<EquipmentDTO> dto = FirebaseHelper.GetEquipmentData(id);
-            dto.Wait();
-            return dto.Result;
-        }
-
         public static EmployeeDTO GetEmployee(string id)
         {
             Task<EmployeeDTO> dto = FirebaseHelper.GetEmployeeData(id);
@@ -583,17 +585,9 @@ namespace JMS_Console
             return dto.Result;
         }
 
-        public static PrivateLogDTO GetLog(string id)
+        public static EquipmentDTO GetEquipment(string id)
         {
-            Task<PrivateLogDTO> dto = FirebaseHelper.GetLogData(id);
-            dto.Wait();
-            return dto.Result;
-        }
-
-
-        public static List<JobDTO> GetJobs()
-        {
-            Task<List<JobDTO>> dto = FirebaseHelper.GetAllJobData();
+            Task<EquipmentDTO> dto = FirebaseHelper.GetEquipmentData(id);
             dto.Wait();
             return dto.Result;
         }
@@ -619,9 +613,23 @@ namespace JMS_Console
             return dto.Result;
         }
 
-        public static List<PrivateLogDTO> GetLogs()
+        public static List<PrivateLog> GetLogs()
         {
-            Task<List<PrivateLogDTO>> dto = FirebaseHelper.GetAllLogData();
+            Task<List<PrivateLog>> dto = FirebaseHelper.GetAllLogData();
+            dto.Wait();
+            return dto.Result;
+        }
+
+        public static List<JobDTO> GetJobs()
+        {
+            Task<List<JobDTO>> dto = FirebaseHelper.GetAllJobData();
+            dto.Wait();
+            return dto.Result;
+        }
+
+        public static PrivateLog GetLog(string id)
+        {
+            Task<PrivateLog> dto = FirebaseHelper.GetLogData(id);
             dto.Wait();
             return dto.Result;
         }
