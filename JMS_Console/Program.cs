@@ -217,8 +217,6 @@ namespace JMS_Console
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"ID:{dto.ID} - Name:{dto.Name} - Client ID:{dto.ClientID}");
-            Console.WriteLine("Equipment List:");
-            dto.EquipmentList.ForEach(e => Console.WriteLine(e));
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine();
         }
@@ -341,11 +339,6 @@ namespace JMS_Console
             job.ClientID = Console.ReadLine();
             job.ID = Guid.NewGuid().ToString();
 
-            Console.Write("Please enter ID's of equipment for job seperated by commas:");
-            string idList = Console.ReadLine();
-
-            job.EquipmentList.AddRange(idList.Split(','));
-
             JMS_Commands.CreateJob(job);
 
             job = null;
@@ -435,17 +428,9 @@ namespace JMS_Console
             dto.ClientID = Console.ReadLine();
             dto.ID = Guid.NewGuid().ToString();
 
-            string eqList = "";
-            dto.EquipmentList.ForEach(e => eqList = string.Concat(eqList, e, ","));
-            Console.WriteLine(string.Concat("\n","Current IDs:",eqList));
-            Console.Write("Please enter ID's of equipment for job seperated by commas:");
-            string idList = Console.ReadLine();
-            dto.EquipmentList.AddRange(idList.Split(','));
-
             JMS_Commands.UpdateJob(dto);
 
-            eqList = null;
-            idList = null;
+
             dto = null;
             GC.Collect();
         }
